@@ -132,9 +132,14 @@ createDuck(getRandomInt(0, 100) + '%', 'black');
 
 // функція руху качок 
 
+// - рухати качку вгору - вправо та вліво 
+
 function moveDuck(duck, type) {
 
     let imageDuck = 0;
+
+    // запускаємо фукнцію, яка визначає положення качки та направляє рух 
+    let direction = directionStart(duck);
 
     const timer = setInterval(function () {
 
@@ -146,9 +151,34 @@ function moveDuck(duck, type) {
         //     //умова якщо немає більше картинки
         if (imageDuck > 2) {
             imageDuck = 0;
-                }
+                
+        }
 
-        moveTopRight(duck, type, imageDuck);
+        switch (direction){
+            case 'top-right':
+                moveTopRight(duck, type, imageDuck);
+                break;
+            case 'top-left':
+                moveTopLeft(duck, type, imageDuck);
+                break;
+            case 'left':
+                moveLeft(duck, type, imageDuck);
+                break;
+            case 'right':
+                moveRight(duck, type, imageDuck);
+                break;
+            case 'down-left':
+                moveDownLeft(duck, type, imageDuck);
+                break;
+            case 'down-right':
+                moveDownRight(duck, type, imageDuck);
+                break;
+            
+            default:
+                moveTopLeft(duck, type, imageDuck);
+                break;
+        }
+
         
             //     //рух качки
         // duck.style.left = duck.offsetLeft - 30 + 'px';
@@ -159,6 +189,16 @@ function moveDuck(duck, type) {
                 clearInterval(timer);
             }
         }, 200);
+}
+// повинна повертати topLeft & topRight 
+function directionStart(duck) {
+    let direction = 'top-left';
+    let body = document.querySelector('body');
+// якщо качка знаходиться в певному полложені екрану, то змінювати її рух - якщо знаходиться у лівій стороні, то рухатись праворуч 
+    if (duck.offsetLeft <= body.clientWidth/2) {
+        direction = 'top-right';
+    }
+    return direction;
 }
 
 // 6 варіантів руху качок 
