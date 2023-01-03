@@ -140,42 +140,44 @@ function moveDuck(duck, type) {
 
     // запускаємо фукнцію, яка визначає положення качки та направляє рух 
     let direction = directionStart(duck);
-
+    let move = true;
+    
     const timer = setInterval(function () {
-
-       
-
         //     //змінюємо картинки
         imageDuck += 1;
 
         //     //умова якщо немає більше картинки
         if (imageDuck > 2) {
-            imageDuck = 0;
-                
+            imageDuck = 0;        
+        }
+
+        if (move===false) {
+                //  зміна напрямку качки & move====true
+            clearInterval(timer);
         }
 
         switch (direction){
             case 'top-right':
-                moveTopRight(duck, type, imageDuck);
+                move = moveTopRight(duck, type, imageDuck);
                 break;
             case 'top-left':
-                moveTopLeft(duck, type, imageDuck);
+                move = moveTopLeft(duck, type, imageDuck);
                 break;
             case 'left':
-                moveLeft(duck, type, imageDuck);
+                move = moveLeft(duck, type, imageDuck);
                 break;
             case 'right':
-                moveRight(duck, type, imageDuck);
+                move = moveRight(duck, type, imageDuck);
                 break;
             case 'down-left':
-                moveDownLeft(duck, type, imageDuck);
+                move = moveDownLeft(duck, type, imageDuck);
                 break;
             case 'down-right':
-                moveDownRight(duck, type, imageDuck);
+                move = moveDownRight(duck, type, imageDuck);
                 break;
             
             default:
-                moveTopLeft(duck, type, imageDuck);
+                move = moveTopLeft(duck, type, imageDuck);
                 break;
         }
 
@@ -185,9 +187,9 @@ function moveDuck(duck, type) {
         // duck.style.top = duck.offsetTop - 30 + 'px';
 
             //     //обмеження, щоб качка не вийшла за екран
-            if (duck.offsetLeft < 0) {
-                clearInterval(timer);
-            }
+            // if (duck.offsetLeft < 0) {
+            //     clearInterval(timer);
+            // }
         }, 200);
 }
 // повинна повертати topLeft & topRight 
@@ -206,40 +208,80 @@ function directionStart(duck) {
 // Кожна функція буде робити зміну картинки 
 // Функція змінює координати 
 
+
+// Прописати перевірку границь 
+
 function moveRight(duck, type, imageDuck) {
   //шукаємо шлях до картинки
     duck.style.backgroundImage = `url(assets/images/duck/${type}/right/${imageDuck}.png)`;
     // задаємо напрям руху 
     duck.style.left = duck.offsetLeft + score + 'px';
+
+           // перевіряємо чи качка долетіла до краю 
+    if (duck.offsetLeft >= document.body.clientWidth - 5) {
+        return false;
+    }
+    return true;
+
 }
 
 function moveLeft(duck, type, imageDuck) {
     duck.style.backgroundImage = `url(assets/images/duck/${type}/left/${imageDuck}.png)`;
     duck.style.left = duck.offsetLeft - score + 'px';
+
+         if (duck.offsetLeft <= 5) {
+        return false;
+    }
+    return true;
 }
 
 function moveTopRight(duck, type, imageDuck) {
     duck.style.backgroundImage = `url(assets/images/duck/${type}/top-right/${imageDuck}.png)`;
     duck.style.left = duck.offsetLeft + score + 'px';
     duck.style.top = duck.offsetTop - score + 'px';
+
+          // перевіряємо чи качка долетіла до краю 
+    if (duck.offsetLeft >= document.body.clientWidth - 5 || duck.offsetTop <= 5) {
+        return false;
+    }
+    return true;
+
 }
 
 function moveTopLeft(duck, type, imageDuck) {
     duck.style.backgroundImage = `url(assets/images/duck/${type}/top-left/${imageDuck}.png)`;
     duck.style.left = duck.offsetLeft - score + 'px';
     duck.style.top = duck.offsetTop - score + 'px';
+
+        // перевіряємо чи качка долетіла до краю 
+    if (duck.offsetLeft <= 5 || duck.offsetTop <= 5) {
+        return false;
+    }
+    return true;
+
 }
 
 function moveDownRight(duck, type, imageDuck) {
     duck.style.backgroundImage = `url(assets/images/duck/${type}/top-right/${imageDuck}.png)`;
     duck.style.left = duck.offsetLeft + score + 'px';
     duck.style.top = duck.offsetTop + score + 'px';
+
+              // перевіряємо чи качка долетіла до низу 
+    if (duck.offsetLeft >= document.body.clientWidth - 5 || duck.offsetTop >=gameArea.clientHeight - 5) {
+        return false;
+    }
+    return true;
 }
 
 function moveDownLeft(duck, type, imageDuck) {
     duck.style.backgroundImage = `url(assets/images/duck/${type}/top-left/${imageDuck}.png)`;
     duck.style.left = duck.offsetLeft - score + 'px';
     duck.style.top = duck.offsetTop + score + 'px';
+
+     if (duck.offsetLeft <= 5 || duck.offsetTop >=gameArea.clientHeight - 5) {
+        return false;
+    }
+    return true;
 }
 
 
