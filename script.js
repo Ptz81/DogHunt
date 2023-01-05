@@ -101,8 +101,8 @@
 
 */
 
-const score = 10;
-
+const score = 20;
+let bullets = 5;
 //знаходимо контейнер для вставки качок
 const gameArea = document.querySelector('.game-area');
 
@@ -114,21 +114,55 @@ const gameArea = document.querySelector('.game-area');
 
 // інштй спосіб створення функції 
 
-function createDuck(left, type) {
+function createDuck(left) {
     let duck = document.createElement('div');
+    
+    //вибір типу качки по кольору
+
+     let type = getRandomInt(0, 2);
+        if (type === 0) {
+            type = 'black';
+        } else {
+            type = 'red';
+        }
+
+
     duck.className = `duck ${type}-duck-left`;
     duck.style.top ="100%";
-    duck.style.left = left;
+    duck.style.left = getRandomInt(0, 100) + "%";
     gameArea.appendChild(duck);
 
     moveDuck(duck, type);
 }
 
 // викликаємо функцію та передаємо параметри
-createDuck(getRandomInt(0, 100) + '%', 'red');
-createDuck(getRandomInt(0, 100) + '%', 'black');
-createDuck(getRandomInt(0, 100) + '%', 'red');
-createDuck(getRandomInt(0, 100) + '%', 'black');
+// createDuck(getRandomInt(0, 100) + '%', 'red');
+// createDuck(getRandomInt(0, 100) + '%', 'black');
+// createDuck(getRandomInt(0, 100) + '%', 'red');
+// createDuck(getRandomInt(0, 100) + '%', 'black');
+
+function start() {
+    // лічильник
+    let i = 0;
+
+    //перевірка куль
+    while (i < bullets) {
+        // викликаємо функцію створення куль
+        createBullets();
+        //викликаємо функцію створення качки
+        createDuck();
+        i++
+    }
+}
+//створюємо елемент патронів
+function createBullets(){
+    let bulletsBlock = document.querySelector('.bullets-container');
+    let bullets = document.createElement('div');
+    bullets.className = 'bullet';
+    bulletsBlock.appendChild(bullets);
+}
+
+start();
 
 // функція руху качок 
 
@@ -152,8 +186,14 @@ function moveDuck(duck, type) {
         }
 
         if (move===false) {
-                //  зміна напрямку качки & move====true
-            clearInterval(timer);
+            
+            //  зміна напрямку качки & move====true
+            
+            direction = changeDirection(direction);
+            move = true;
+
+            // clearInterval(timer);
+            
         }
 
         switch (direction){
@@ -190,7 +230,7 @@ function moveDuck(duck, type) {
             // if (duck.offsetLeft < 0) {
             //     clearInterval(timer);
             // }
-        }, 200);
+        }, 50);
 }
 // повинна повертати topLeft & topRight 
 function directionStart(duck) {
@@ -201,6 +241,56 @@ function directionStart(duck) {
         direction = 'top-right';
     }
     return direction;
+}
+
+
+/*
+1. повертати випадковий напрям руху
+2. якщо випадковий напрям співпав з новим напрямом, повторити функцію
+
+*/
+
+
+function changeDirection(before){
+    let random = getRandomInt(0, 6) // 6 - не враховується і відпаде
+    let direction = null;
+    switch (random){
+            case 0:
+            direction = 'top-right';
+                break;
+            case 1:
+            direction = 'top-left';
+                break;
+            case 2:
+            direction = 'right';
+                break;
+            case 3:
+            direction = 'left';
+                break;
+            case 4:
+            direction = 'down-right';
+                break;
+            case 5:
+            direction = 'down-left';
+                break;
+            
+            default:
+            direction = 'top-right';
+                break;
+    }
+    /*
+    
+    1.якщо качка рухалась вгору, змінити на рух у низ або вбік;
+    2.якщо качка рухалась вниз, змінити на рух угору або вбік;
+
+    */
+
+
+    if (direction === before) {
+        changeDirection(before);
+    } else {
+        return direction;
+    }
 }
 
 // 6 варіантів руху качок 
@@ -218,7 +308,7 @@ function moveRight(duck, type, imageDuck) {
     duck.style.left = duck.offsetLeft + score + 'px';
 
            // перевіряємо чи качка долетіла до краю 
-    if (duck.offsetLeft >= document.body.clientWidth - 5) {
+    if (duck.offsetLeft + duck.clientWidth >= document.body.clientWidth - 5) {
         return false;
     }
     return true;
@@ -241,7 +331,7 @@ function moveTopRight(duck, type, imageDuck) {
     duck.style.top = duck.offsetTop - score + 'px';
 
           // перевіряємо чи качка долетіла до краю 
-    if (duck.offsetLeft >= document.body.clientWidth - 5 || duck.offsetTop <= 5) {
+    if (duck.offsetLeft + duck.clientWidth >= document.body.clientWidth - 10 || duck.offsetTop <= 5) {
         return false;
     }
     return true;
@@ -254,7 +344,7 @@ function moveTopLeft(duck, type, imageDuck) {
     duck.style.top = duck.offsetTop - score + 'px';
 
         // перевіряємо чи качка долетіла до краю 
-    if (duck.offsetLeft <= 5 || duck.offsetTop <= 5) {
+    if (duck.offsetLeft <= 10 || duck.offsetTop <= 10) {
         return false;
     }
     return true;
@@ -267,7 +357,7 @@ function moveDownRight(duck, type, imageDuck) {
     duck.style.top = duck.offsetTop + score + 'px';
 
               // перевіряємо чи качка долетіла до низу 
-    if (duck.offsetLeft >= document.body.clientWidth - 5 || duck.offsetTop >=gameArea.clientHeight - 5) {
+    if (duck.offsetLeft + duck.clientWidth >= document.body.clientWidth - 5 || duck.offsetTop >=gameArea.clientHeight - 5) {
         return false;
     }
     return true;
