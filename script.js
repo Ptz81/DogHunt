@@ -116,6 +116,8 @@ const gameArea = document.querySelector('.game-area');
 
 function createDuck(left) {
     let duck = document.createElement('div');
+     
+    // таймер привязуємо до качки
     
     //вибір типу качки по кольору
 
@@ -125,14 +127,17 @@ function createDuck(left) {
         } else {
             type = 'red';
         }
-
+    let timer = moveDuck(duck, type);
 
     duck.className = `duck ${type}-duck-left`;
     duck.style.top ="100%";
     duck.style.left = getRandomInt(0, 100) + "%";
+    //створюємо дата атрибут
+    duck.dataset.timer = timer;
+    
     gameArea.appendChild(duck);
 
-    moveDuck(duck, type);
+   
 }
 
 // викликаємо функцію та передаємо параметри
@@ -163,6 +168,21 @@ function createBullets(){
 }
 
 start();
+
+//подія клік на качку
+/*
+1.навчитися визначати на що ми клікнули
+2.видаляти качку
+3.видаляти таймер
+*/
+
+gameArea.onclick = function (event) {
+
+    //якщо ми клікаємо на обєкт з класом duck, тоді його видаляємо
+    if (event.target.classList.contains('duck') === true) {
+        event.target.remove();
+    } 
+}
 
 // функція руху качок 
 
@@ -230,7 +250,10 @@ function moveDuck(duck, type) {
             // if (duck.offsetLeft < 0) {
             //     clearInterval(timer);
             // }
-        }, 50);
+    }, 50);
+    
+    return timer;
+
 }
 // повинна повертати topLeft & topRight 
 function directionStart(duck) {
