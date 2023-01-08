@@ -100,11 +100,15 @@
 
 
 */
-
-const score = 20;
+let countScores = 0;
+const score = 10;
 let bullets = 5;
+// знаходимо контейнер для очок
+const scoresBlock = document.querySelector('.scores');
 //знаходимо контейнер для вставки качок
 const gameArea = document.querySelector('.game-area');
+
+const audioGun = document.querySelector("#audioGun");
 
 //створення качки
 // function createDuck(top, left, type) {
@@ -173,15 +177,46 @@ start();
 /*
 1.навчитися визначати на що ми клікнули
 2.видаляти качку
-3.видаляти таймер
+3.видаляти таймер:
+
+
+
+4. Збільшувати кількість балів
+5. Зменшувати кулі
+- перевіряти чи є кулі
+-якщо є, то їх зменшувати
+-якщо немає, то качки вилітають 
+- прибирати кулі з екрану
 */
 
 gameArea.onclick = function (event) {
+   
+
+    if (bullets > 0) {
+         // звук пострілу
+        audioGun.play();
+        
+        //зменшити кількість куль
+        bullets = bullets - 1;
 
     //якщо ми клікаємо на обєкт з класом duck, тоді його видаляємо
     if (event.target.classList.contains('duck') === true) {
         event.target.remove();
+
+        scoresBlock.innerText = countScores;
+
+         /*додаєм бали*/
+        countScores = countScores + 100;
+
+        /* очищаємо таймер*/
+        clearInterval(event.target.dataset.timer);
+        
     } 
+    }
+
+    
+
+    
 }
 
 // функція руху качок 
