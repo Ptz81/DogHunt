@@ -199,10 +199,14 @@ gameArea.onclick = function (event) {
         //зменшити кількість куль
         bullets = bullets - 1;
 
-    //якщо ми клікаємо на обєкт з класом duck, тоді його видаляємо
-    if (event.target.classList.contains('duck') === true) {
-        event.target.remove();
+        //вибираємо контейнер із кулями і віднімаємо при вистрілі
+        let oneBulletsBlock = document.querySelector('.bullets-container div');
+        oneBulletsBlock.remove();
 
+    //якщо ми клікаємо на обєкт з класом duck, тоді його видаляємо
+    if (event.target.classList.contains('duck') === true && event.target.classList.contains('shot') === false){
+        // event.target.remove();
+        shootDuck(event.target);
         scoresBlock.innerText = countScores;
 
          /*додаєм бали*/
@@ -216,6 +220,48 @@ gameArea.onclick = function (event) {
 
     
 
+    
+}
+
+//функція, коли попадають по качці
+
+function shootDuck(duck) {
+    let type = 'black';
+    duck.classList.add('shot');
+if (duck.classList.contains('.red-duck-left')) {
+    type = 'red';
+}
+
+    duck.style.backgroundImage = `url(assets/images/duck/${type}/shot/0.png)`;
+
+    setTimeout(function () {
+        deadDuck(duck, type);
+    }, 500)
+}
+
+
+//функція, коли подає качка
+
+function deadDuck(duck, type) {
+    let imageDuck = 0;
+    let timer = setInterval(function () {
+        //     //змінюємо картинки
+        imageDuck += 1;
+
+        //     //умова якщо немає більше картинки
+        if (imageDuck > 2) {
+            imageDuck = 0;
+        }
+        duck.style.backgroundImage = `url(assets/images/duck/${type}/dead/${imageDuck}.png)`;
+        duck.style.top = duck.offsetTop + score + 'px';
+        
+        if (duck.offsetTop >= document.body.clientHeight) {
+            
+            /* очищаємо таймер*/
+            clearInterval(timer);
+            duck.remove();
+        }
+    }, 50)
     
 }
 
