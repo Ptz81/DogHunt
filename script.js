@@ -171,6 +171,12 @@ function createBullets(){
     bulletsBlock.appendChild(bullets);
 }
 
+/*
+створити функцію - початкова анімація, коли собака нюхає, потім стрибає у кущі
+після цього викликаємо старт гри
+*/
+
+
 start();
 
 //подія клік на качку
@@ -216,6 +222,8 @@ gameArea.onclick = function (event) {
         clearInterval(event.target.dataset.timer);
         
     } 
+    } else {
+        saveDuck();
     }
 
     
@@ -478,8 +486,16 @@ function moveDownLeft(duck, type, imageDuck) {
     return true;
 }
 
+//качки летять вільні
+function moveFree(duck, type, imageDuck) {
+    duck.style.backgroundImage = `url(assets/images/duck/${type}/top-left/${imageDuck}.png)`;
+    duck.style.top = duck.offsetTop - score + 'px';
 
-
+         if (duck.offsetTop + duck.clientHeight <= 0) {
+        return false;
+    }
+    return true;
+}
 
 
 // Рандомний вибір місця вильоту качки 
@@ -489,3 +505,55 @@ function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min)) + min; //Максимум не включається, мінімум включається
 }
 
+
+
+/*
+1. коли закінчились кулі, всі качки мають полетіти вгору
+2. Порахувати, скільки залишилось качок, які врятовані
+3. Порахувати кількість поцілених качок (внизу зліва)
+
+4. fullscreen div
+5. pause - видалити всі сет інтервали і для кожної качки прописати setinterval або js timer pause - 
+6. Новий рівень почати
+
+*/
+
+
+function saveDuck() {
+    let ducks = document.querySelectorAll('.duck');
+
+   
+
+    if (ducks.length > 0) {
+        let i = 0;
+        while (i < ducks.length) {
+        let duck = ducks[i];
+        let type = 'black';
+    
+        if (duck.classList.contains('.red-duck-left')) {
+            type = 'red';
+        }
+    let move = true;
+     //зупиняємо усі таймери
+            clearInterval(duck.dataset.timer); 
+
+            let imageDuck = 0;
+
+            let timerID = setInterval(function() {
+                move = moveFree(duck, type, imageDuck); 
+                if (imageDuck >= 2) {
+            imageDuck = 0;        
+                }
+                imageDuck++;
+                if (move === false) {
+                    clearInterval(timerID);
+                    duck.remove();
+                }
+    }, 50)        
+    
+
+
+    i++;
+        }
+    }
+};
