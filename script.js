@@ -109,6 +109,8 @@ const scoresBlock = document.querySelector('.scores');
 const gameArea = document.querySelector('.game-area');
 
 const audioGun = document.querySelector("#audioGun");
+let duckShot = 0;
+let freeDuck = 0;
 
 //створення качки
 // function createDuck(top, left, type) {
@@ -251,6 +253,7 @@ if (duck.classList.contains('.red-duck-left')) {
 //функція, коли подає качка
 
 function deadDuck(duck, type) {
+    duckShot++;
     let imageDuck = 0;
     let timer = setInterval(function () {
         //     //змінюємо картинки
@@ -518,16 +521,24 @@ function getRandomInt(min, max) {
 
 */
 
-
+let next = false;
 function saveDuck() {
-    let ducks = document.querySelectorAll('.duck');
 
+    if (next === false) {
+
+        next = true;
+        let ducks = document.querySelectorAll('.duck');
+        let ducksDead = document.querySelectorAll('.duck .shot');
    
 
     if (ducks.length > 0) {
         let i = 0;
+
+        //рахуємо скільки звільнились качок
+        freeDuck = ducks.length - ducksDead.length;
         while (i < ducks.length) {
-        let duck = ducks[i];
+            let duck = ducks[i];
+            
         let type = 'black';
     
         if (duck.classList.contains('.red-duck-left')) {
@@ -554,6 +565,38 @@ function saveDuck() {
 
 
     i++;
-        }
-    }
+        } //while
+        } //ducks.length > 0
+        diedIconDuck();
+        freeIconDuck();
+    } //next === false
+    
 };
+
+
+
+
+
+function diedIconDuck() {
+    let i = 0;
+    let diedBlock = document.querySelector('.died-ducks-cnt-container');
+    diedBlock.innerText = '';
+    while (i < duckShot) {
+        let div = document.createElement('div');
+        div.className = 'died-duck-icon';
+        diedBlock.appendChild(div);
+        i++;
+    }
+}
+
+function freeIconDuck() {
+    let i = 0;
+    let freeBlock = document.querySelector('.left-ducks-cnt-container');
+    freeBlock.innerText = '';
+    while (i < freeDuck) {
+        let div = document.createElement('div');
+        div.className = 'left-duck-icon';
+        freeBlock.appendChild(div);
+        i++;
+    }
+}
